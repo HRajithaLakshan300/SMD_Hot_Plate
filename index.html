@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Voice LED Control</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- MQTT library -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
   <style>
@@ -36,7 +35,6 @@
   <button onclick="startListening()">🎙 Start Listening</button>
   <br><br>
 
-  <!-- MQTT test buttons -->
   <button onclick="client.publish('esp32/led','ON')">TEST ON</button>
   <button onclick="client.publish('esp32/led','OFF')">TEST OFF</button>
 
@@ -111,6 +109,192 @@
 
 </body>
 </html>
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hot Plate Controller</title>
+
+  <!-- Mobile responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- MQTT -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <!-- Simple professional styling -->
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+
+    h3 {
+      text-align: center;
+      color: #555;
+      font-weight: normal;
+      margin-top: 0;
+    }
+
+    .info {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .temp {
+      font-size: 32px;
+      font-weight: bold;
+      color: #e74c3c;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 15px;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>HOT PLATE CONTROLLER</h1>
+    <h3>IoT Based Temperature Control System</h3>
+
+    <div class="info">
+      <strong>Rajitha Lakshan</strong><br>
+      Department of Electrical Engineering
+    </div>
+
+    <div class="card">
+      <div>Current Temperature</div>
+      <div class="temp"><span id="temp">--</span> °C</div>
+    </div>
+
+    <div class="card">
+      <div>Set Target Temperature</div>
+      <input type="number" id="setTemp" value="180" min="50" max="250">
+      <button onclick="sendTemp()">Update Temperature</button>
+    </div>
+
+    <div class="status" id="status">
+      Connecting to device...
+    </div>
+
+    <footer>
+      © 2026 | Hot Plate Controller Project
+    </footer>
+
+  </div>
+
+<script>
+  const statusText = document.getElementById("status");
+
+  // MQTT over WebSocket (HiveMQ)
+  const client = mqtt.connect("wss://broker.hivemq.com:8000/mqtt");
+
+  client.on("connect", () => {
+    statusText.innerText = "Connected to Hot Plate";
+    statusText.style.color = "green";
+    client.subscribe("smdhotplate/currentTemp");
+  });
+
+  client.on("error", () => {
+    statusText.innerText = "Connection Error";
+    statusText.style.color = "red";
+  });
+
+  client.on("message", (topic, message) => {
+    if (topic === "smdhotplate/currentTemp") {
+      document.getElementById("temp").innerText = message.toString();
+    }
+  });
+
+  function sendTemp() {
+    const value = document.getElementById("setTemp").value;
+    client.publish("smdhotplate/setTemp", value);
+  }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
