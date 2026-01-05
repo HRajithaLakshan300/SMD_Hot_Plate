@@ -253,7 +253,7 @@
   const statusText = document.getElementById("status");
 
   // MQTT over WebSocket (HiveMQ)
-  const client = mqtt.connect("wss://broker.hivemq.com:8000/mqtt");
+  const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
 
   client.on("connect", () => {
     statusText.innerText = "Connected to Hot Plate";
@@ -280,6 +280,7 @@
 
 </body>
 </html>
+
 
 
 
